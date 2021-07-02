@@ -55,7 +55,7 @@ echo "exporting uac_qid_link table content (no UACs)"
 QID_FILE=qid_$FILENAME_DATE.json
 
 PGPASSWORD=$DB_PASSWORD psql "sslmode=verify-ca sslrootcert=/root/.postgresql/root.crt sslcert=/root/.postgresql/postgresql.crt sslkey=/tmp/client-key.pem hostaddr=$DB_HOST port=$DB_PORT user=$DB_USERNAME dbname=rm" \
--c "\copy (SELECT row_to_json(t) FROM (SELECT id,qid,caze_case_id as case_id,active,blank_questionnaire,ccs_case,created_date_time,last_updated FROM casev3.uac_qid_link where last_updated >= '$START_DATETIME' and last_updated < '$END_DATETIME') t) To '$QID_FILE';"
+-c "\copy (SELECT row_to_json(t) FROM (SELECT id,qid,caze_id as case_id,active,created_at,last_updated_at FROM casev3.uac_qid_link where last_updated_at >= '$START_DATETIME' and last_updated_at < '$END_DATETIME') t) To '$QID_FILE';"
 
 
 if [ -n "$DATAEXPORT_MI_BUCKET_NAME" ]
@@ -117,7 +117,7 @@ echo "exporting cases table content"
 CASES_FILE=cases_$FILENAME_DATE.json
 
 PGPASSWORD=$DB_PASSWORD psql "sslmode=verify-ca sslrootcert=/root/.postgresql/root.crt sslcert=/root/.postgresql/postgresql.crt sslkey=/tmp/client-key.pem hostaddr=$DB_HOST port=$DB_PORT user=$DB_USERNAME dbname=rm" \
--c "\copy (SELECT row_to_json(t) FROM (SELECT * FROM casev2.cases where last_updated >= '$START_DATETIME' and last_updated < '$END_DATETIME') t) To '$CASES_FILE';"
+-c "\copy (SELECT row_to_json(t) FROM (SELECT * FROM casev3.cases where last_updated_at >= '$START_DATETIME' and last_updated_at < '$END_DATETIME') t) To '$CASES_FILE';"
 
 
 if [ -n "$DATAEXPORT_MI_BUCKET_NAME" ]
